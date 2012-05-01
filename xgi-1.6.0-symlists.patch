@@ -1,0 +1,120 @@
+diff -up xf86-video-xgi-1.6.0/src/xgi_driver.c.jx xf86-video-xgi-1.6.0/src/xgi_driver.c
+--- xf86-video-xgi-1.6.0/src/xgi_driver.c.jx	2011-04-25 07:28:40.000000000 -0400
++++ xf86-video-xgi-1.6.0/src/xgi_driver.c	2011-04-25 07:30:08.346107922 -0400
+@@ -500,13 +500,6 @@ xgiSetup(pointer module, pointer opts, i
+         xf86AddDriver(&XGI, module, 0);
+ #endif
+ 
+-        LoaderRefSymLists(vgahwSymbols, fbSymbols, xaaSymbols,
+-                          shadowSymbols, ramdacSymbols, ddcSymbols,
+-                          vbeSymbols, int10Symbols,
+-#ifdef XF86DRI
+-                          drmSymbols, driSymbols,
+-#endif
+-                          NULL);
+         return (pointer) TRUE;
+     }
+ 
+@@ -1615,7 +1608,6 @@ XGIInternalDDC(ScrnInfoPtr pScrn, int cr
+     ErrorF("get EDID with VBIOS call...\n");
+     if (xf86LoadSubModule(pScrn, "int10")) 
+ 	{
+-        xf86LoaderReqSymLists(int10Symbols, NULL);
+         pInt = xf86InitInt10(pXGI->pEnt->index);
+         if (pInt == NULL) {
+             xf86DrvMsg(pScrn->scrnIndex, X_WARNING,
+@@ -1677,7 +1669,6 @@ XGIInternalDDC(ScrnInfoPtr pScrn, int cr
+ 			g_DVI_I_SignalType = (buffer[20] & 0x80) >> 7;
+ 			ErrorF("DVI-I : %s signal ...\n", (g_DVI_I_SignalType == 0x01) ? "DVI" : "CRT" );
+ 
+-            xf86LoaderReqSymLists(ddcSymbols, NULL);
+ 
+ 			/* Jong 09/04/2007; Alan fixed abnormal EDID data */
+ 			/* pMonitor = xf86InterpretEDID(pScrn->scrnIndex, buffer) ; */
+@@ -2219,7 +2210,6 @@ XGIDDCPreInit(ScrnInfoPtr pScrn)
+         if (xf86LoadSubModule(pScrn, "ddc")) 
+ 		{
+ 
+-            xf86LoaderReqSymLists(ddcSymbols, NULL);
+ 
+             if (pXGI->xgi_HwDevExt.jChipType == XG27) 
+ 			{
+@@ -2685,7 +2675,6 @@ XGIPreInit(ScrnInfoPtr pScrn, int flags)
+         return FALSE;
+     }
+ 
+-    xf86LoaderReqSymLists(vgahwSymbols, NULL);
+ 
+     /* Due to the liberal license terms this is needed for
+      * keeping the copyright notice readable and intact in
+@@ -2798,7 +2787,6 @@ XGIPreInit(ScrnInfoPtr pScrn, int flags)
+                    "Initializing display adapter through int10\n");
+ 
+         if (xf86LoadSubModule(pScrn, "int10")) {
+-            xf86LoaderReqSymLists(int10Symbols, NULL);
+             pXGI->pInt = xf86InitInt10(pXGI->pEnt->index);
+         }
+         else {
+@@ -2830,7 +2818,6 @@ XGIPreInit(ScrnInfoPtr pScrn, int flags)
+         return FALSE;
+     }
+ 
+-    xf86LoaderReqSymLists(ramdacSymbols, NULL);
+ 
+     /* Set pScrn->monitor */
+     pScrn->monitor = pScrn->confScreen->monitor;
+@@ -3695,7 +3682,6 @@ XGIPreInit(ScrnInfoPtr pScrn, int flags)
+ #if !defined(__powerpc__)
+     /* Now load and initialize VBE module. */
+     if (xf86LoadSubModule(pScrn, "vbe")) {
+-        xf86LoaderReqSymLists(vbeSymbols, NULL);
+         pXGI->pVbe = VBEExtendedInit(pXGI->pInt, pXGI->pEnt->index,
+                                      SET_BIOS_SCRATCH | RESTORE_BIOS_SCRATCH);
+         if (!pXGI->pVbe) {
+@@ -4117,7 +4103,6 @@ XGIPreInit(ScrnInfoPtr pScrn, int flags)
+         XGIFreeRec(pScrn);
+         return FALSE;
+     }
+-    xf86LoaderReqSymLists(fbSymbols, NULL);
+ 
+     /* Load XAA if needed */
+     if (!pXGI->NoAccel) 
+@@ -4139,7 +4124,6 @@ XGIPreInit(ScrnInfoPtr pScrn, int flags)
+ 				XGIFreeRec(pScrn);
+ 				return FALSE;
+ 			}
+-			xf86LoaderReqSymLists(xaaSymbols, NULL);
+ 		}
+ #endif
+ 
+@@ -4150,7 +4134,6 @@ XGIPreInit(ScrnInfoPtr pScrn, int flags)
+ 			  XGIErrorLog(pScrn, "Could not load exa module\n");
+ 			  return FALSE;
+ 		   }
+-		   xf86LoaderReqSymLists(exaSymbols, NULL);
+ 		}
+ #endif
+ 	}
+@@ -4169,14 +4152,12 @@ XGIPreInit(ScrnInfoPtr pScrn, int flags)
+             XGIFreeRec(pScrn);
+             return FALSE;
+         }
+-        xf86LoaderReqSymLists(shadowSymbols, NULL);
+     }
+ 
+     /* Load the dri module if requested. */
+ #ifdef XF86DRI
+     if(pXGI->loadDRI) {
+         if (xf86LoadSubModule(pScrn, "dri")) {
+-            xf86LoaderReqSymLists(driSymbols, drmSymbols, NULL);
+         }
+         else {
+             if (!IS_DUAL_HEAD(pXGI))
+@@ -4771,7 +4752,6 @@ XGIScreenInit(int scrnIndex, ScreenPtr p
+ #if !defined(__powerpc__)
+     if (!IS_DUAL_HEAD(pXGI) || !IS_SECOND_HEAD(pXGI)) {
+         if (xf86LoadSubModule(pScrn, "vbe")) {
+-            xf86LoaderReqSymLists(vbeSymbols, NULL);
+             pXGI->pVbe = VBEExtendedInit(NULL, pXGI->pEnt->index,
+                                          SET_BIOS_SCRATCH |
+                                          RESTORE_BIOS_SCRATCH);

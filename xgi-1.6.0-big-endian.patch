@@ -1,0 +1,29 @@
+diff -up ./src/xgi_accel.c.jx ./src/xgi_accel.c
+--- xf86-video-xgi-1.6.0/src/xgi_accel.c.jx	2010-06-25 13:05:04.000000000 -0400
++++ xf86-video-xgi-1.6.0/src/xgi_accel.c	2010-09-10 15:02:03.000000000 -0400
+@@ -200,20 +200,11 @@ extern int FbDevExist;
+ #endif
+ 
+ #if X_BYTE_ORDER == X_BIG_ENDIAN
+-static CARD32 BE_SWAP32 (CARD32 val)
+-{
+-	PDEBUG(ErrorF("X_BIG_ENDIAN...\n"));
+-    if (CurrentColorDepth == 8)
+-	    return   ((((val) & 0x000000ff) << 24) | \
+-                  (((val) & 0x0000ff00) << 8) |  \
+-                  (((val) & 0x00ff0000) >> 8) |  \
+-                  (((val) & 0xff000000) >> 24));
+-    if (CurrentColorDepth == 24)
+-        return val;
+-    if (CurrentColorDepth == 16)
+-        return ((((val) & 0x0000ffff) << 16) | \
+-		         (((val) & 0xffff0000) >> 16));
+-}    
++
++#include <byteswap.h>
++
++#define BE_SWAP32(x) bswap_32(x)
++
+ #else 
+ static CARD32 BE_SWAP32 (CARD32 val)
+ {

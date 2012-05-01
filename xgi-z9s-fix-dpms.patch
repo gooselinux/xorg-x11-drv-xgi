@@ -1,0 +1,12 @@
+diff --git a/src/vb_ext.c b/src/vb_ext.c
+index 2f8c689..95051f2 100755
+--- a/src/vb_ext.c
++++ b/src/vb_ext.c
+@@ -591,6 +591,7 @@ VOID XGISetDPMS(ScrnInfoPtr pScrn, PVB_DEVICE_INFO pVBInfo, PXGI_HW_DEVICE_INFO
+                  }
+ 
+                  XGI_XG21BLSignalVDD( 0x20 , 0x20, pVBInfo ) ; /* LVDS signal on */
++	 	 XGIPowerSaving(pVBInfo, g_PowerSavingStatus);
+                  XGI_DisplayOn( pXGIHWDE, pVBInfo );
+                } 
+ 

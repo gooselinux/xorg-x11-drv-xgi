@@ -1,0 +1,4 @@
+alias pcivideo:v000018CAd00000020sv*sd*bc*sc*i* sis # XGI G20 (Z7)
+alias pcivideo:v000018CAd00000021sv*sd*bc*sc*i* xgi # XGI G21 (Z9s)
+alias pcivideo:v000018CAd00000027sv*sd*bc*sc*i* xgi # XGI G27 (Z11)
+alias pcivideo:v000018CAd00000040sv*sd*bc*sc*i* sis # XGI G50 (V3XT, V5, V8)
